@@ -1,0 +1,27 @@
+
+name: rental_poc_workspace
+publish_to: none
+
+environment:
+  sdk: ^3.9.0
+
+workspace:
+  - apps/shell_app
+  - packages/core
+  - packages/design_system
+  - packages/features/catalog_mfe
+  - packages/features/booking_mfe
+  - packages/features/account_mfe
+
+dev_dependencies:
+  melos: ^8.10.1
+
+melos:
+  scripts:
+    analyze:
+      description: Analisa os pacotes do monorepo
+      run: melos analyze
+
+    test:
+      description: Executa os testes dos pacotes
+      run: melos exec -- flutter test
