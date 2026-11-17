@@ -1,30 +1,38 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
 import 'package:flutter_test/flutter_test.dart';
-import 'package:material_ui/material_ui.dart';
-
 import 'package:shell_app/main.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  testWidgets('switches between app sections', (tester) async {
+    await tester.pumpWidget(const RentalApp());
+    await tester.pumpAndSettle();
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    expect(find.text('Selecionar veículo de teste'), findsOneWidget);
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+    await tester.tap(find.text('Conta'));
+    await tester.pumpAndSettle();
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    expect(find.text('account_mfe'), findsOneWidget);
+
+    await tester.tap(find.text('Carros'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Buscar carros'), findsOneWidget);
+  });
+
+  testWidgets('opens booking from catalog and returns to catalog', (
+    tester,
+  ) async {
+    await tester.pumpWidget(const RentalApp());
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Selecionar veículo de teste'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Veículo: car-001'), findsOneWidget);
+
+    await tester.tap(find.text('Voltar'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Selecionar veículo de teste'), findsOneWidget);
   });
 }
