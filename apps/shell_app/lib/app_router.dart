@@ -19,7 +19,7 @@ final appRouter = GoRouter(
               builder: (context, state) => CatalogPage(
                 title: 'Início',
                 onCarSelected: (carId) {
-                  context.push('/bookings/new/$carId');
+                  context.push('/cars/$carId');
                 },
               ),
             ),
@@ -32,9 +32,29 @@ final appRouter = GoRouter(
               builder: (context, state) => CatalogPage(
                 title: 'Buscar carros',
                 onCarSelected: (carId) {
-                  context.push('/bookings/new/$carId');
+                  context.push('/cars/$carId');
                 },
               ),
+            ),
+            GoRoute(
+              path: '/cars/:carId',
+              builder: (context, state) {
+                final carId = state.pathParameters['carId']!;
+
+                return CarDetailsPage(
+                  carId: carId,
+                  onBack: () {
+                    if (context.canPop()) {
+                      context.pop();
+                    } else {
+                      context.go('/cars');
+                    }
+                  },
+                  onBookingRequested: (id) {
+                    context.push('/bookings/new/$id');
+                  },
+                );
+              },
             ),
           ],
         ),

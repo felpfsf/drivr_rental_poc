@@ -1,7 +1,7 @@
+import 'package:catalog_mfe/src/models/drivr_rental_car.dart';
+import 'package:catalog_mfe/src/presentation/widgets/car_image.dart';
 import 'package:design_system/design_system.dart';
 import 'package:material_ui/material_ui.dart';
-
-import '../../models/drivr_rental_car.dart';
 
 class CarCard extends StatelessWidget {
   const CarCard({
@@ -73,7 +73,7 @@ class CarCard extends StatelessWidget {
                 const SizedBox(width: AppSpacing.sm),
                 Expanded(
                   flex: 5,
-                  child: _CarThumbnail(
+                  child: CarImage(
                     car: car,
                     color: thumbnailColor,
                   ),
@@ -83,45 +83,6 @@ class CarCard extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-}
-
-class _CarThumbnail extends StatelessWidget {
-  const _CarThumbnail({
-    required this.car,
-    required this.color,
-  });
-
-  final DrivrRentalCar car;
-  final Color color;
-
-  @override
-  Widget build(BuildContext context) {
-    final placeholder = Container(
-      decoration: BoxDecoration(
-        color: AppColors.canvas,
-        borderRadius: BorderRadius.circular(4),
-      ),
-      alignment: Alignment.center,
-      child: Icon(
-        Icons.directions_car_filled_rounded,
-        size: 72,
-        color: color,
-      ),
-    );
-
-    if (car.imageAsset == null) {
-      return placeholder;
-    }
-
-    return Image.asset(
-      car.imageAsset!,
-      package: 'catalog_mfe',
-      fit: BoxFit.contain,
-      errorBuilder: (context, error, stackTrace) {
-        return placeholder;
-      },
     );
   }
 }
