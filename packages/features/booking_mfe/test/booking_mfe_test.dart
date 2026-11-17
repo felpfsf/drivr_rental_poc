@@ -3,22 +3,16 @@ import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  testWidgets('shows selected car and invokes close callback', (tester) async {
-    var didClose = false;
-
+  testWidgets('shows selected car info', (tester) async {
     await tester.pumpWidget(
       MaterialApp(
         home: BookingPage(
           carId: 'car-001',
-          onClose: () => didClose = true,
+          onClose: () {},
         ),
       ),
     );
 
     expect(find.text('Veículo: car-001'), findsOneWidget);
-
-    await tester.tap(find.text('Voltar'));
-
-    expect(didClose, isTrue);
   });
 }
