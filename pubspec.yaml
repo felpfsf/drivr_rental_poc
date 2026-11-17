@@ -24,4 +24,4 @@ melos:
 
     test:
       description: Executa os testes dos pacotes
-      run: melos exec -- flutter test
+      run: melos exec --concurrency=1 -- flutter test
