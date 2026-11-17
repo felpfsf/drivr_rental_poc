@@ -74,9 +74,44 @@
       "responseMode": null,
       "streamingMode": null,
       "streamingInterval": 0
+    },
+    {
+      "uuid": "4a67a61f-1d81-4e68-ad14-3c4ceaa3c3e4",
+      "type": "http",
+      "documentation": "Lista de carros simula falha",
+      "method": "get",
+      "endpoint": "cars",
+      "responses": [
+        {
+          "uuid": "a4d902c4-e456-4f8b-929b-b7651b40b457",
+          "body": "{\n  \"code\": \"INTERNAL_SERVER_ERROR\",\n  \"message\": \"Erro interno simulado\"\n}",
+          "latency": 0,
+          "statusCode": 500,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
     }
   ],
   "rootChildren": [
+    {
+      "type": "route",
+      "uuid": "4a67a61f-1d81-4e68-ad14-3c4ceaa3c3e4"
+    },
     {
       "type": "route",
       "uuid": "c66901d7-9666-410e-924c-f362b77bec54"
