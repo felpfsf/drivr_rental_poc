@@ -1,0 +1,16 @@
+{
+  "folders": [
+    {
+      "name": "catalog_mfe",
+      "path": "."
+    },
+    {
+      "name": "core",
+      "path": "../../core"
+    },
+    {
+      "name": "design_system",
+      "path": "../../design_system"
+    }
+  ]
+}

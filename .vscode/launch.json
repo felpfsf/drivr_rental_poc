@@ -1,0 +1,12 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "DrivR Rental",
+      "request": "launch",
+      "type": "dart",
+      "program": "${workspaceFolder}/apps/shell_app/lib/main.dart",
+      "cwd": "${workspaceFolder}/apps/shell_app"
+    }
+  ]
+}
