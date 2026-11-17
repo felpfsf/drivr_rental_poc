@@ -17,6 +17,11 @@ class RentalApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       routerConfig: appRouter,
       theme: AppTheme.light,
+      locale: const Locale('pt', 'BR'),
+      supportedLocales: const [
+        Locale('pt', 'BR'),
+      ],
+      localizationsDelegates: GlobalMaterialLocalizations.delegates,
     );
   }
 }
