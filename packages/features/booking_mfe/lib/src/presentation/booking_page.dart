@@ -1,9 +1,8 @@
+import 'package:booking_mfe/src/data/booking_repository.dart';
+import 'package:booking_mfe/src/domain/booking_quote.dart';
 import 'package:design_system/design_system.dart';
 import 'package:intl/intl.dart';
 import 'package:material_ui/material_ui.dart';
-
-import '../data/mock_quote.dart';
-import '../domain/booking_quote.dart';
 
 enum _BookingStep {
   dates,
@@ -16,10 +15,12 @@ class BookingPage extends StatefulWidget {
     super.key,
     required this.carId,
     required this.onClose,
+    required this.repository,
   });
 
   final String carId;
   final VoidCallback onClose;
+  final BookingRepository repository;
 
   @override
   State<BookingPage> createState() => _BookingPageState();
@@ -30,6 +31,8 @@ class _BookingPageState extends State<BookingPage> {
 
   RentalPeriod? _period;
   BookingQuote? _quote;
+
+  bool _isLoadingQuote = false;
 
   final _currency = NumberFormat.currency(
     locale: 'pt_BR',
@@ -79,28 +82,40 @@ class _BookingPageState extends State<BookingPage> {
     });
   }
 
-  void _openReview() {
+  Future<void> _openReview() async {
     final period = _period;
-    if (period == null) return;
 
-    final quote = mockQuoteFor(
-      carId: widget.carId,
-      period: period,
-    );
+    if (period == null || _isLoadingQuote) return;
 
-    if (quote == null) {
+    setState(() => _isLoadingQuote = true);
+
+    try {
+      final quote = await widget.repository.getQuote(
+        carId: widget.carId,
+        period: period,
+      );
+
+      if (!mounted) return;
+
+      setState(() {
+        _quote = quote;
+        _step = _BookingStep.review;
+      });
+    } catch (error) {
+      if (!mounted) return;
+
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Veículo não encontrado'),
+          content: Text(
+            'Não foi possível calcular o orçamento.',
+          ),
         ),
       );
-      return;
+    } finally {
+      if (mounted) {
+        setState(() => _isLoadingQuote = false);
+      }
     }
-
-    setState(() {
-      _quote = quote;
-      _step = _BookingStep.review;
-    });
   }
 
   void _confirmBooking() {
@@ -148,8 +163,8 @@ class _BookingPageState extends State<BookingPage> {
       },
       bottomNavigationBar: switch (_step) {
         _BookingStep.dates => _bottomButton(
-          label: 'Confirmar período',
-          onPressed: _period == null ? null : _openReview,
+          label: _isLoadingQuote ? 'Calculando...' : 'Confirmar período',
+          onPressed: _period == null || _isLoadingQuote ? null : _openReview,
         ),
         _BookingStep.review => _bottomButton(
           label: 'Alugar agora',

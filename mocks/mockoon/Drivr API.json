@@ -1,0 +1,142 @@
+{
+  "uuid": "1fcb295d-fb07-4299-8bf3-1186bdcb4bf1",
+  "lastMigration": 33,
+  "name": "Drivr API",
+  "endpointPrefix": "",
+  "latency": 0,
+  "port": 3000,
+  "hostname": "",
+  "folders": [],
+  "routes": [
+    {
+      "uuid": "c66901d7-9666-410e-924c-f362b77bec54",
+      "type": "crud",
+      "documentation": "",
+      "method": "",
+      "endpoint": "cars",
+      "responses": [
+        {
+          "uuid": "1c0cd7d5-5a02-4ac5-8faa-f7c77f77a03c",
+          "body": "{}",
+          "latency": 800,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "DATABUCKET",
+          "filePath": "",
+          "databucketID": "srhl",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "8370698a-7fde-4a02-87ce-3064c56c55aa",
+      "type": "http",
+      "documentation": "Reserva de carro",
+      "method": "post",
+      "endpoint": "bookings/quote",
+      "responses": [
+        {
+          "uuid": "4f563d82-954f-4a60-80d2-7a2a0d0999bb",
+          "body": "\n{{#if (gt (bodyRaw 'days') 0)}}\n  {{#with (find (dataRaw 'cars') (object id=(bodyRaw 'carId')))}}\n{\n  \"carId\": \"{{id}}\",\n  \"startDate\": \"{{body 'startDate'}}\",\n  \"endDate\": \"{{body 'endDate'}}\",\n  \"days\": {{body 'days'}},\n  \"dailyRate\": {{dailyPrice}},\n  \"total\": {{multiply dailyPrice (bodyRaw 'days')}}\n}\n  {{else}}\n    {{status 404}}\n{\n  \"code\": \"CAR_NOT_FOUND\",\n  \"message\": \"Veículo não encontrado\"\n}\n  {{/with}}\n{{else}}\n  {{status 400}}\n{\n  \"code\": \"INVALID_PERIOD\",\n  \"message\": \"Quantidade de dias inválida\"\n}\n{{/if}}\n",
+          "latency": 800,
+          "statusCode": 200,
+          "label": "",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    }
+  ],
+  "rootChildren": [
+    {
+      "type": "route",
+      "uuid": "c66901d7-9666-410e-924c-f362b77bec54"
+    },
+    {
+      "type": "route",
+      "uuid": "8370698a-7fde-4a02-87ce-3064c56c55aa"
+    }
+  ],
+  "proxyMode": false,
+  "proxyHost": "",
+  "proxyRemovePrefix": false,
+  "tlsOptions": {
+    "enabled": false,
+    "type": "CERT",
+    "pfxPath": "",
+    "certPath": "",
+    "keyPath": "",
+    "caPath": "",
+    "passphrase": ""
+  },
+  "cors": true,
+  "headers": [
+    {
+      "key": "Content-Type",
+      "value": "application/json"
+    },
+    {
+      "key": "Access-Control-Allow-Origin",
+      "value": "*"
+    },
+    {
+      "key": "Access-Control-Allow-Methods",
+      "value": "GET,POST,PUT,PATCH,DELETE,HEAD,OPTIONS"
+    },
+    {
+      "key": "Access-Control-Allow-Headers",
+      "value": "Content-Type, Origin, Accept, Authorization, Content-Length, X-Requested-With"
+    }
+  ],
+  "proxyReqHeaders": [
+    {
+      "key": "",
+      "value": ""
+    }
+  ],
+  "proxyResHeaders": [
+    {
+      "key": "",
+      "value": ""
+    }
+  ],
+  "data": [
+    {
+      "uuid": "6afbe695-1e83-466b-ae62-397373f73af3",
+      "id": "srhl",
+      "name": "cars",
+      "documentation": "Mock de carros",
+      "value": "\n[\n  {\n    \"id\": \"car-001\",\n    \"brand\": \"Audi\",\n    \"model\": \"RS 5 Coupé\",\n    \"dailyPrice\": 120,\n    \"topSpeedKmh\": 250,\n    \"accelerationSeconds\": 3.9,\n    \"horsePower\": 450,\n    \"fuel\": \"Gasolina\",\n    \"transmission\": \"Automático\",\n    \"seats\": 4,\n    \"description\": \"Um coupé esportivo que combina desempenho e conforto.\"\n  },\n  {\n    \"id\": \"car-002\",\n    \"brand\": \"Porsche\",\n    \"model\": \"Panamera\",\n    \"dailyPrice\": 340,\n    \"topSpeedKmh\": 270,\n    \"accelerationSeconds\": 5.5,\n    \"horsePower\": 330,\n    \"fuel\": \"Gasolina\",\n    \"transmission\": \"Automático\",\n    \"seats\": 4,\n    \"description\": \"Um sedã esportivo que une sofisticação e desempenho.\"\n  },\n  {\n    \"id\": \"car-003\",\n    \"brand\": \"Chevrolet\",\n    \"model\": \"Corvette Z06\",\n    \"dailyPrice\": 620,\n    \"topSpeedKmh\": 315,\n    \"accelerationSeconds\": 3.0,\n    \"horsePower\": 670,\n    \"fuel\": \"Gasolina\",\n    \"transmission\": \"Automático\",\n    \"seats\": 2,\n    \"description\": \"Um superesportivo de personalidade forte.\"\n  },\n  {\n    \"id\": \"car-004\",\n    \"brand\": \"Lamborghini\",\n    \"model\": \"Huracán\",\n    \"dailyPrice\": 580,\n    \"topSpeedKmh\": 325,\n    \"accelerationSeconds\": 2.9,\n    \"horsePower\": 640,\n    \"fuel\": \"Gasolina\",\n    \"transmission\": \"Automático\",\n    \"seats\": 2,\n    \"description\": \"Um superesportivo de design icônico e desempenho extremo.\"\n  }\n]\n"
+    }
+  ],
+  "callbacks": []
+}

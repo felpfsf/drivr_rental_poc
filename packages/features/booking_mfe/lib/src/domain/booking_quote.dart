@@ -31,11 +31,11 @@ class RentalPeriod {
 class BookingQuote {
   final RentalPeriod period;
   final int dailyRate;
+  final int total;
 
   BookingQuote({
     required this.period,
     required this.dailyRate,
+    required this.total,
   });
-
-  int get total => period.days * dailyRate;
 }
