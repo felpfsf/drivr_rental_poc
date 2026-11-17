@@ -1,12 +1,15 @@
+import 'package:account_mfe/account_mfe.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:account_mfe/account_mfe.dart';
-
 void main() {
-  test('adds one to input values', () {
-    final calculator = Calculator();
-    expect(calculator.addOne(2), 3);
-    expect(calculator.addOne(-7), -6);
-    expect(calculator.addOne(0), 1);
+  testWidgets('shows account placeholder', (tester) async {
+    await tester.pumpWidget(const MaterialApp(home: AccountPage()));
+
+    expect(find.text('account_mfe'), findsOneWidget);
+    expect(
+      find.text('Login e cadastro serão integrados ao Mockoon.'),
+      findsOneWidget,
+    );
   });
 }

@@ -1,12 +1,24 @@
+import 'package:booking_mfe/booking_mfe.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:booking_mfe/booking_mfe.dart';
-
 void main() {
-  test('adds one to input values', () {
-    final calculator = Calculator();
-    expect(calculator.addOne(2), 3);
-    expect(calculator.addOne(-7), -6);
-    expect(calculator.addOne(0), 1);
+  testWidgets('shows selected car and invokes close callback', (tester) async {
+    var didClose = false;
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: BookingPage(
+          carId: 'car-001',
+          onClose: () => didClose = true,
+        ),
+      ),
+    );
+
+    expect(find.text('Veículo: car-001'), findsOneWidget);
+
+    await tester.tap(find.text('Voltar'));
+
+    expect(didClose, isTrue);
   });
 }
