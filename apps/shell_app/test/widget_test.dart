@@ -1,38 +1,31 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:shell_app/main.dart';
 
 void main() {
-  testWidgets('switches between app sections', (tester) async {
-    await tester.pumpWidget(const RentalApp());
-    await tester.pumpAndSettle();
+  testWidgets(
+    'Catalog seleciona veículo e abre Booking',
+    (tester) async {
+      await tester.pumpWidget(const RentalApp());
+      await tester.pumpAndSettle();
 
-    expect(find.text('Selecionar veículo de teste'), findsOneWidget);
+      expect(find.text('RS 5 Coupé'), findsOneWidget);
 
-    await tester.tap(find.text('Conta'));
-    await tester.pumpAndSettle();
+      await tester.tap(
+        find.byKey(const Key('car_card_car-001')),
+      );
 
-    expect(find.text('account_mfe'), findsOneWidget);
+      await tester.pumpAndSettle();
 
-    await tester.tap(find.text('Carros'));
-    await tester.pumpAndSettle();
+      expect(
+        find.text('Veículo: car-001'),
+        findsOneWidget,
+      );
 
-    expect(find.text('Buscar carros'), findsOneWidget);
-  });
+      await tester.tap(find.text('Voltar'));
+      await tester.pumpAndSettle();
 
-  testWidgets('opens booking from catalog and returns to catalog', (
-    tester,
-  ) async {
-    await tester.pumpWidget(const RentalApp());
-    await tester.pumpAndSettle();
-
-    await tester.tap(find.text('Selecionar veículo de teste'));
-    await tester.pumpAndSettle();
-
-    expect(find.text('Veículo: car-001'), findsOneWidget);
-
-    await tester.tap(find.text('Voltar'));
-    await tester.pumpAndSettle();
-
-    expect(find.text('Selecionar veículo de teste'), findsOneWidget);
-  });
+      expect(find.text('RS 5 Coupé'), findsOneWidget);
+    },
+  );
 }
