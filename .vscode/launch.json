@@ -2,11 +2,26 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "DrivR Rental",
+      "name": "DrivR Rental (iOS)",
       "request": "launch",
       "type": "dart",
       "program": "${workspaceFolder}/apps/shell_app/lib/main.dart",
-      "cwd": "${workspaceFolder}/apps/shell_app"
+      "cwd": "${workspaceFolder}/apps/shell_app",
+      "flutterMode": "debug",
+      "toolArgs": [
+        "--dart-define=API_BASE_URL=http://localhost:3000"
+      ]
+    },
+    {
+      "name": "DrivR Rental (Android)",
+      "request": "launch",
+      "type": "dart",
+      "program": "${workspaceFolder}/apps/shell_app/lib/main.dart",
+      "cwd": "${workspaceFolder}/apps/shell_app",
+      "flutterMode": "debug",
+      "toolArgs": [
+        "--dart-define=API_BASE_URL=http://10.0.2.2:3000"
+      ]
     }
   ]
 }
