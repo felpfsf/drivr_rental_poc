@@ -1,5 +1,7 @@
 import 'package:booking_mfe/src/data/booking_repository.dart';
+import 'package:booking_mfe/src/domain/booking_confirmation.dart';
 import 'package:booking_mfe/src/domain/booking_quote.dart';
+import 'package:core/core.dart';
 import 'package:design_system/design_system.dart';
 import 'package:intl/intl.dart';
 import 'package:material_ui/material_ui.dart';
@@ -34,6 +36,7 @@ class _BookingPageState extends State<BookingPage> {
 
   RentalPeriod? _period;
   BookingQuote? _quote;
+  BookingConfirmation? _confirmation;
 
   bool _isLoadingQuote = false;
   bool _isConfirming = false;
@@ -123,23 +126,70 @@ class _BookingPageState extends State<BookingPage> {
   }
 
   Future<void> _confirmBooking() async {
-    if (_isConfirming) return;
+    if (_isConfirming || _step != _BookingStep.review) {
+      return;
+    }
+
+    final quote = _quote;
+    if (quote == null) return;
 
     setState(() => _isConfirming = true);
 
     try {
+      // 1. Solicita autenticação quando necessário.
       final authenticated = await widget.ensureAuthenticated();
 
       if (!mounted || !authenticated) return;
 
+      // 2. Cria a reserva através do repository.
+      final confirmation = await widget.repository.createBooking(
+        carId: widget.carId,
+        period: quote.period,
+      );
+
+      if (!mounted) return;
+
+      // 3. Valida o contrato recebido.
+      if (confirmation.status != 'confirmed' ||
+          confirmation.id.isEmpty ||
+          confirmation.carId != widget.carId) {
+        throw const FormatException(
+          'Resposta de confirmação inválida',
+        );
+      }
+
+      // 4. Sucesso somente após confirmação da API.
       setState(() {
+        _confirmation = confirmation;
         _step = _BookingStep.success;
       });
+    } on ApiException catch (error) {
+      if (!mounted) return;
+
+      final message = switch (error.statusCode) {
+        401 => 'Sua sessão não foi aceita pelo servidor.',
+        409 => 'Este veículo não está disponível no período.',
+        _ => 'Não foi possível confirmar sua reserva.',
+      };
+
+      _showError(message);
+    } catch (_) {
+      if (!mounted) return;
+
+      _showError(
+        'Ocorreu um erro ao confirmar a reserva.',
+      );
     } finally {
       if (mounted) {
         setState(() => _isConfirming = false);
       }
     }
+  }
+
+  void _showError(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
+    );
   }
 
   void _goBack() {
@@ -347,6 +397,8 @@ class _BookingPageState extends State<BookingPage> {
   }
 
   Widget _buildSuccess() {
+    final confirmation = _confirmation!;
+
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(AppSpacing.xl),
@@ -360,7 +412,8 @@ class _BookingPageState extends State<BookingPage> {
             ),
             const SizedBox(height: AppSpacing.lg),
             const Text(
-              'Reserva simulada!',
+              'Reserva confirmada!',
+              textAlign: TextAlign.center,
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 26,
@@ -369,15 +422,24 @@ class _BookingPageState extends State<BookingPage> {
             ),
             const SizedBox(height: AppSpacing.md),
             const Text(
-              'Fluxo concluído com sucesso. '
-              'Nenhuma reserva foi salva.',
+              'Sua reserva foi confirmada '
+              'pela API de demonstração.',
               textAlign: TextAlign.center,
               style: TextStyle(color: AppColors.muted),
             ),
+            const SizedBox(height: AppSpacing.lg),
+            SelectableText(
+              'Código: ${confirmation.id}',
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 13,
+              ),
+            ),
             const SizedBox(height: AppSpacing.xl),
-            FilledButton(
+            AppButton(
+              label: 'Concluir',
               onPressed: widget.onClose,
-              child: const Text('Concluir'),
             ),
           ],
         ),

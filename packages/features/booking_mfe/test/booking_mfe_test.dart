@@ -34,4 +34,16 @@ class _BookingRepositoryFake implements BookingRepository {
       total: 120 * period.days,
     );
   }
+
+  @override
+  Future<BookingConfirmation> createBooking({
+    required String carId,
+    required RentalPeriod period,
+  }) async {
+    return BookingConfirmation(
+      id: 'booking-001',
+      carId: carId,
+      status: 'confirmed',
+    );
+  }
 }

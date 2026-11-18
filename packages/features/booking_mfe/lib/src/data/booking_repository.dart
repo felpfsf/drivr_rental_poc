@@ -1,9 +1,14 @@
+import 'package:booking_mfe/src/domain/booking_confirmation.dart';
+import 'package:booking_mfe/src/domain/booking_quote.dart';
 import 'package:core/core.dart';
-
-import '../domain/booking_quote.dart';
 
 abstract interface class BookingRepository {
   Future<BookingQuote> getQuote({
+    required String carId,
+    required RentalPeriod period,
+  });
+
+  Future<BookingConfirmation> createBooking({
     required String carId,
     required RentalPeriod period,
   });
@@ -19,18 +24,12 @@ class HttpBookingRepository implements BookingRepository {
     required String carId,
     required RentalPeriod period,
   }) async {
-    String formatDate(DateTime date) {
-      return '${date.year}-'
-          '${date.month.toString().padLeft(2, '0')}-'
-          '${date.day.toString().padLeft(2, '0')}';
-    }
-
     final response = await _api.post(
       '/bookings/quote',
       {
         'carId': carId,
-        'startDate': formatDate(period.start),
-        'endDate': formatDate(period.end),
+        'startDate': _formatDate(period.start),
+        'endDate': _formatDate(period.end),
         'days': period.days,
       },
     );
@@ -42,5 +41,30 @@ class HttpBookingRepository implements BookingRepository {
       dailyRate: (json['dailyRate'] as num).toInt(),
       total: (json['total'] as num).toInt(),
     );
+  }
+
+  @override
+  Future<BookingConfirmation> createBooking({
+    required String carId,
+    required RentalPeriod period,
+  }) async {
+    final response = await _api.post(
+      '/bookings',
+      {
+        'carId': carId,
+        'startDate': _formatDate(period.start),
+        'endDate': _formatDate(period.end),
+      },
+    );
+
+    final json = Map<String, dynamic>.from(response as Map);
+
+    return BookingConfirmation.fromJson(json);
+  }
+
+  String _formatDate(DateTime date) {
+    return '${date.year}-'
+        '${date.month.toString().padLeft(2, '0')}-'
+        '${date.day.toString().padLeft(2, '0')}';
   }
 }
