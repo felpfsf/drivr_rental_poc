@@ -13,6 +13,7 @@ void main() {
           carId: 'car-001',
           onClose: () {},
           repository: _BookingRepositoryFake(),
+          ensureAuthenticated: () async => true,
         ),
       ),
     );

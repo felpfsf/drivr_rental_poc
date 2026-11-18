@@ -6,21 +6,37 @@ class ApiClient {
   ApiClient({
     required String baseUrl,
     Dio? dio,
+    String? Function()? tokenProvider,
   }) : _dio =
            dio ??
            Dio(
              BaseOptions(
-               baseUrl: baseUrl.replaceFirst(
-                 RegExp(r'/+$'),
-                 '',
-               ),
+               baseUrl: baseUrl.replaceFirst(RegExp(r'/+$'), ''),
                connectTimeout: const Duration(seconds: 10),
                receiveTimeout: const Duration(seconds: 10),
                sendTimeout: const Duration(seconds: 10),
                contentType: Headers.jsonContentType,
                responseType: ResponseType.json,
              ),
-           );
+           ) {
+    if (tokenProvider != null) {
+      _dio.interceptors.add(
+        InterceptorsWrapper(
+          onRequest: (options, handler) {
+            final token = tokenProvider();
+
+            if (token != null &&
+                token.isNotEmpty &&
+                !options.path.startsWith('/auth/')) {
+              options.headers['Authorization'] = 'Bearer $token';
+            }
+
+            handler.next(options);
+          },
+        ),
+      );
+    }
+  }
 
   final Dio _dio;
 

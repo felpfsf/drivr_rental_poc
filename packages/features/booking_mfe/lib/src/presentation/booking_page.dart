@@ -16,11 +16,14 @@ class BookingPage extends StatefulWidget {
     required this.carId,
     required this.onClose,
     required this.repository,
+    required this.ensureAuthenticated,
   });
 
   final String carId;
   final VoidCallback onClose;
   final BookingRepository repository;
+
+  final Future<bool> Function() ensureAuthenticated;
 
   @override
   State<BookingPage> createState() => _BookingPageState();
@@ -33,6 +36,7 @@ class _BookingPageState extends State<BookingPage> {
   BookingQuote? _quote;
 
   bool _isLoadingQuote = false;
+  bool _isConfirming = false;
 
   final _currency = NumberFormat.currency(
     locale: 'pt_BR',
@@ -118,11 +122,24 @@ class _BookingPageState extends State<BookingPage> {
     }
   }
 
-  void _confirmBooking() {
-    // Simulação local. Nenhuma reserva é persistida.
-    setState(() {
-      _step = _BookingStep.success;
-    });
+  Future<void> _confirmBooking() async {
+    if (_isConfirming) return;
+
+    setState(() => _isConfirming = true);
+
+    try {
+      final authenticated = await widget.ensureAuthenticated();
+
+      if (!mounted || !authenticated) return;
+
+      setState(() {
+        _step = _BookingStep.success;
+      });
+    } finally {
+      if (mounted) {
+        setState(() => _isConfirming = false);
+      }
+    }
   }
 
   void _goBack() {
@@ -167,8 +184,8 @@ class _BookingPageState extends State<BookingPage> {
           onPressed: _period == null || _isLoadingQuote ? null : _openReview,
         ),
         _BookingStep.review => _bottomButton(
-          label: 'Alugar agora',
-          onPressed: _confirmBooking,
+          label: _isConfirming ? 'Validando...' : 'Alugar agora',
+          onPressed: _isConfirming ? null : _confirmBooking,
         ),
         _BookingStep.success => null,
       },

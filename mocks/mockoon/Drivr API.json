@@ -105,6 +105,215 @@
       "responseMode": null,
       "streamingMode": null,
       "streamingInterval": 0
+    },
+    {
+      "uuid": "ec0e48b4-834b-4792-aa5f-76ba09e04761",
+      "type": "http",
+      "documentation": "Retorna token fictício",
+      "method": "post",
+      "endpoint": "auth/login",
+      "responses": [
+        {
+          "uuid": "06061a22-8464-4aaa-b213-6f17a920a312",
+          "body": "{\n  \"accessToken\": \"drivr-demo-token\",\n  \"user\": {\n    \"id\": \"user-001\",\n    \"name\": \"Usuário Demo\",\n    \"email\": \"demo@drivr.local\"\n  }\n}",
+          "latency": 800,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [
+            {
+              "target": "body",
+              "modifier": "email",
+              "value": "demo@drivr.local",
+              "invert": false,
+              "operator": "equals"
+            },
+            {
+              "target": "body",
+              "modifier": "password",
+              "value": "123456",
+              "invert": false,
+              "operator": "equals"
+            }
+          ],
+          "rulesOperator": "AND",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "c15f9eec-ab26-4d8d-b08f-622f08adfae8",
+          "body": "{\n  \"code\": \"INVALID_CREDENTIALS\",\n  \"message\": \"E-mail ou senha inválidos\"\n}",
+          "latency": 0,
+          "statusCode": 401,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "570e015b-8226-4ad6-a059-2d01e9042f1d",
+      "type": "http",
+      "documentation": "Simula cadastro",
+      "method": "post",
+      "endpoint": "auth/register",
+      "responses": [
+        {
+          "uuid": "77dfad6b-63f8-4fb5-8e64-ece6a0cd694b",
+          "body": "{\n  \"registrationId\": \"registration-demo-001\",\n  \"status\": \"simulated\",\n  \"message\": \"Cadastro recebido com sucesso\"\n}",
+          "latency": 800,
+          "statusCode": 201,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "AND",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "d3691232-2041-4848-af66-7121b3ea5390",
+      "type": "http",
+      "documentation": "Simula cadastro",
+      "method": "get",
+      "endpoint": "users/me",
+      "responses": [
+        {
+          "uuid": "e7cf19e0-cafd-4ac3-ba76-d0d77efe62b8",
+          "body": "{\n  \"id\": \"user-001\",\n  \"name\": \"Usuário Demo\",\n  \"email\": \"demo@drivr.local\"\n}",
+          "latency": 800,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [
+            {
+              "target": "header",
+              "modifier": "Authorization",
+              "value": "Bearer drivr-demo-token",
+              "invert": false,
+              "operator": "equals"
+            }
+          ],
+          "rulesOperator": "AND",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "13eb1b5b-1f7d-4abd-8e77-b55a42011965",
+          "body": "{\n  \"code\": \"UNAUTHORIZED\",\n  \"message\": \"Autenticação necessária\"\n}",
+          "latency": 0,
+          "statusCode": 401,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "9e05da68-be33-42ec-92c0-5f8f0a2d192a",
+      "type": "http",
+      "documentation": "",
+      "method": "post",
+      "endpoint": "bookings",
+      "responses": [
+        {
+          "uuid": "0519d915-7dfe-48fe-9c91-27e47804d242",
+          "body": "{\n  \"id\": \"booking-{{uuid}}\",\n  \"carId\": \"{{body 'carId'}}\",\n  \"startDate\": \"{{body 'startDate'}}\",\n  \"endDate\": \"{{body 'endDate'}}\",\n  \"status\": \"confirmed\"\n}",
+          "latency": 0,
+          "statusCode": 201,
+          "label": "",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "fde18375-0f65-41ae-86e9-73244c09ca2d",
+          "body": "{\n  \"code\": \"UNAUTHORIZED\",\n  \"message\": \"Autenticação necessária\"\n}",
+          "latency": 0,
+          "statusCode": 401,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
     }
   ],
   "rootChildren": [
@@ -119,6 +328,22 @@
     {
       "type": "route",
       "uuid": "8370698a-7fde-4a02-87ce-3064c56c55aa"
+    },
+    {
+      "type": "route",
+      "uuid": "ec0e48b4-834b-4792-aa5f-76ba09e04761"
+    },
+    {
+      "type": "route",
+      "uuid": "570e015b-8226-4ad6-a059-2d01e9042f1d"
+    },
+    {
+      "type": "route",
+      "uuid": "d3691232-2041-4848-af66-7121b3ea5390"
+    },
+    {
+      "type": "route",
+      "uuid": "9e05da68-be33-42ec-92c0-5f8f0a2d192a"
     }
   ],
   "proxyMode": false,
