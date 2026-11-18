@@ -314,6 +314,42 @@
       "responseMode": null,
       "streamingMode": null,
       "streamingInterval": 0
+    },
+    {
+      "uuid": "e65bfb46-d303-4a06-9b91-d5d42de38838",
+      "type": "http",
+      "documentation": "SDUI - Catalogo",
+      "method": "get",
+      "endpoint": "catalog/home-layout",
+      "responses": [
+        {
+          "uuid": "1c9fb16a-b64e-4a3f-8498-6228e25729dc",
+          "body": "\n{\n  \"schemaVersion\": 2,\n  \"blocks\": [\n    {\n      \"type\": \"column\",\n      \"props\": {\n        \"spacing\": \"md\"\n      },\n      \"children\": [\n        {\n          \"type\": \"text\",\n          \"props\": {\n            \"value\": \"Sua próxima experiência começa aqui\",\n            \"style\": \"heading\"\n          }\n        },\n        {\n          \"type\": \"text\",\n          \"props\": {\n            \"value\": \"Descubra carros incríveis para sua viagem.\",\n            \"style\": \"body\"\n          }\n        },\n        {\n          \"type\": \"row\",\n          \"props\": {\n            \"spacing\": \"sm\"\n          },\n          \"children\": [\n            {\n              \"type\": \"text\",\n              \"props\": {\n                \"value\": \"Carros selecionados\",\n                \"style\": \"caption\"\n              }\n            },\n            {\n              \"type\": \"text\",\n              \"props\": {\n                \"value\": \"Uma experiência premium\",\n                \"style\": \"caption\"\n              }\n            }\n          ]\n        },\n        {\n          \"type\": \"spacer\",\n          \"props\": {\n            \"size\": \"sm\"\n          }\n        },\n        {\n          \"type\": \"button\",\n          \"props\": {\n            \"label\": \"Conhecer o Audi RS 5\"\n          },\n          \"action\": {\n            \"type\": \"open_car\",\n            \"carId\": \"car-001\"\n          }\n        }\n      ]\n    }\n  ]\n}\n",
+          "latency": 1200,
+          "statusCode": 200,
+          "label": "",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
     }
   ],
   "rootChildren": [
@@ -344,6 +380,10 @@
     {
       "type": "route",
       "uuid": "9e05da68-be33-42ec-92c0-5f8f0a2d192a"
+    },
+    {
+      "type": "route",
+      "uuid": "e65bfb46-d303-4a06-9b91-d5d42de38838"
     }
   ],
   "proxyMode": false,

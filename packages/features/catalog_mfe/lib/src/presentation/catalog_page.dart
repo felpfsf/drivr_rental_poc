@@ -1,5 +1,6 @@
 import 'package:catalog_mfe/catalog_mfe.dart';
 import 'package:catalog_mfe/src/models/drivr_rental_car.dart';
+import 'package:catalog_mfe/src/presentation/widgets/catalog_home_slot.dart';
 import 'package:design_system/design_system.dart';
 import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
@@ -24,6 +25,7 @@ class CatalogPage extends StatefulWidget {
 
 class _CatalogPageState extends State<CatalogPage> {
   late Future<List<DrivrRentalCar>> _carsFuture;
+  late Future<CatalogHomeLayout> _homeLayoutFuture;
 
   @override
   void initState() {
@@ -33,6 +35,7 @@ class _CatalogPageState extends State<CatalogPage> {
 
   void _loadCars() {
     _carsFuture = widget.repository.getCars();
+    _homeLayoutFuture = widget.repository.getHomeLayout();
   }
 
   void _retry() {
@@ -74,10 +77,21 @@ class _CatalogPageState extends State<CatalogPage> {
           content = ListView.separated(
             key: const Key('catalog_list'),
             padding: const EdgeInsets.all(AppSpacing.md),
-            itemCount: cars.length,
+
+            // O primeiro item será a seção dinâmica.
+            itemCount: cars.length + 1,
+
             separatorBuilder: (_, _) => const SizedBox(height: AppSpacing.sm),
+
             itemBuilder: (context, index) {
-              final car = cars[index];
+              if (index == 0) {
+                return CatalogHomeSlot(
+                  layoutFuture: _homeLayoutFuture,
+                  onCarSelected: widget.onCarSelected,
+                );
+              }
+
+              final car = cars[index - 1];
 
               return CarCard(
                 car: car,

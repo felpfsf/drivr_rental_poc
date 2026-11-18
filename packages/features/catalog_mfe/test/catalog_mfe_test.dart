@@ -54,6 +54,11 @@ class _CatalogRepositoryStub implements CatalogRepository {
   }
 
   @override
+  Future<CatalogHomeLayout> getHomeLayout() async {
+    throw UnimplementedError();
+  }
+
+  @override
   Future<DrivrRentalCar?> getCarById(String id) async {
     requestedId = id;
     return car;
