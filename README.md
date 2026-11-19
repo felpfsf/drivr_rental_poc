@@ -12,6 +12,19 @@ POC de um aplicativo de aluguel de veículos feita em **Flutter**, organizada em
 - [Mockoon Desktop](https://mockoon.com/) para executar a API simulada.
 - Emulador Android, simulador iOS ou dispositivo configurado para Flutter.
 
+## Documentação dos módulos
+
+| Módulo | Documentação |
+| --- | --- |
+| Shell App | [Arquitetura e navegação](apps/shell_app/README.md) |
+| Core | [Infraestrutura HTTP](packages/core/README.md) |
+| Design System | [Tema e componentes](packages/design_system/README.md) |
+| SDUI Engine | [Parser, Registry e Renderer](packages/sdui_engine/README.md) |
+| Catalog MFE | [Catálogo de veículos](packages/features/catalog_mfe/README.md) |
+| Booking MFE | [Fluxo de reservas](packages/features/booking_mfe/README.md) |
+| Account MFE | [Autenticação e perfil](packages/features/account_mfe/README.md) |
+| Mockoon | [API simulada](mocks/mockoon/README.md) |
+
 ## Executando o projeto
 
 1. **Abra a pasta raiz do monorepo** no VS Code ou terminal.
@@ -110,7 +123,7 @@ Abra **Run and Debug**, selecione a plataforma e pressione **F5**:
 ## API simulada (Mockoon)
 
 | Método | Rota | Uso |
-|---|---|---|
+| --- | --- | --- |
 | `GET` | `/cars` | Lista de veículos (Data Bucket/CRUD) |
 | `GET` | `/cars/:id` | Detalhes de um veículo |
 | `GET` | `/catalog/home-layout` | Documento SDUI da Home (schema v1/v2) |
