@@ -17,12 +17,12 @@ workspace:
 dev_dependencies:
   melos: ^8.10.1
 
-melos:
-  scripts:
-    analyze:
-      description: Analisa os pacotes do monorepo
-      run: melos analyze
+# melos:
+#   scripts:
+#     analyze:
+#       description: Analisa os pacotes do monorepo
+#       run: melos analyze
 
-    test:
-      description: Executa os testes dos pacotes
-      run: melos exec --concurrency=1 -- flutter test
+#     test:
+#       description: Executa os testes dos pacotes
+#       run: melos exec --concurrency=1 -- flutter test

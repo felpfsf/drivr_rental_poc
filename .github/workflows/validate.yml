@@ -1,3 +1,4 @@
+
 name: DrivR Validation
 
 on:
@@ -30,7 +31,7 @@ jobs:
             --set-exit-if-changed apps packages
 
       - name: Analyze
-        run: dart run melos run analyze
+        run: dart run melos analyze
 
       - name: Test
-        run: dart run melos run test
+        run: dart run melos test
