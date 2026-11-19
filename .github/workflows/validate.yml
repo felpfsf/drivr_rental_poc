@@ -1,0 +1,36 @@
+name: DrivR Validation
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Bootstrap workspace
+        run: dart run melos bootstrap
+
+      - name: Check formatting
+        run: |
+          dart format --output=none \
+            --set-exit-if-changed apps packages
+
+      - name: Analyze
+        run: dart run melos run analyze
+
+      - name: Test
+        run: dart run melos run test
