@@ -1,55 +1,114 @@
+import 'package:catalog_mfe/catalog_mfe.dart';
+import 'package:catalog_mfe/src/models/drivr_rental_car.dart';
+import 'package:catalog_mfe/src/presentation/widgets/catalog_home_slot.dart';
 import 'package:design_system/design_system.dart';
 import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
 
-import '../data/mock_cars.dart';
 import 'widgets/car_card.dart';
 
-class CatalogPage extends StatelessWidget {
+class CatalogPage extends StatefulWidget {
   const CatalogPage({
     super.key,
     required this.title,
     required this.onCarSelected,
+    required this.repository,
   });
 
   final String title;
   final ValueChanged<String> onCarSelected;
+  final CatalogRepository repository;
+
+  @override
+  State<CatalogPage> createState() => _CatalogPageState();
+}
+
+class _CatalogPageState extends State<CatalogPage> {
+  late Future<List<DrivrRentalCar>> _carsFuture;
+  late Future<CatalogHomeLayout> _homeLayoutFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadCars();
+  }
+
+  void _loadCars() {
+    _carsFuture = widget.repository.getCars();
+    _homeLayoutFuture = widget.repository.getHomeLayout();
+  }
+
+  void _retry() {
+    setState(_loadCars);
+  }
 
   @override
   Widget build(BuildContext context) {
-    const thumbnailColors = [
-      Color(0xFF8B929B),
-      Color(0xFF38393C),
-      Color(0xFFE1B900),
-      AppColors.primary,
-    ];
+    return FutureBuilder<List<DrivrRentalCar>>(
+      future: _carsFuture,
+      builder: (context, snapshot) {
+        final cars = snapshot.data ?? <DrivrRentalCar>[];
 
-    return Semantics(
-      label: '$title - catálogo de veículos',
-      child: Column(
-        children: [
-          _CatalogHeader(totalCars: mockCars.length),
-          Expanded(
-            child: ListView.separated(
-              key: const Key('catalog_list'),
-              padding: const EdgeInsets.all(AppSpacing.md),
-              itemCount: mockCars.length,
-              separatorBuilder: (context, index) =>
-                  const SizedBox(height: AppSpacing.sm),
-              itemBuilder: (context, index) {
-                final car = mockCars[index];
+        Widget content;
 
-                return CarCard(
-                  car: car,
-                  thumbnailColor:
-                      thumbnailColors[index % thumbnailColors.length],
-                  onTap: () => onCarSelected(car.id),
-                );
-              },
+        if (snapshot.connectionState != ConnectionState.done) {
+          content = const Center(
+            child: CircularProgressIndicator(),
+          );
+        } else if (snapshot.hasError) {
+          content = Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text('Não foi possível carregar os carros'),
+                const SizedBox(height: 16),
+                TextButton(
+                  onPressed: _retry,
+                  child: const Text('Tentar novamente'),
+                ),
+              ],
             ),
-          ),
-        ],
-      ),
+          );
+        } else if (cars.isEmpty) {
+          content = const Center(
+            child: Text('Nenhum veículo disponível'),
+          );
+        } else {
+          content = ListView.separated(
+            key: const Key('catalog_list'),
+            padding: const EdgeInsets.all(AppSpacing.md),
+
+            // O primeiro item será a seção dinâmica.
+            itemCount: cars.length + 1,
+
+            separatorBuilder: (_, _) => const SizedBox(height: AppSpacing.sm),
+
+            itemBuilder: (context, index) {
+              if (index == 0) {
+                return CatalogHomeSlot(
+                  layoutFuture: _homeLayoutFuture,
+                  onCarSelected: widget.onCarSelected,
+                );
+              }
+
+              final car = cars[index - 1];
+
+              return CarCard(
+                car: car,
+                thumbnailColor: AppColors.primary,
+                onTap: () => widget.onCarSelected(car.id),
+              );
+            },
+          );
+        }
+
+        return Column(
+          children: [
+            _CatalogHeader(totalCars: cars.length),
+            Expanded(child: content),
+          ],
+        );
+      },
     );
   }
 }

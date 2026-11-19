@@ -18,5 +18,6 @@ BookingQuote? mockQuoteFor({
   return BookingQuote(
     period: period,
     dailyRate: dailyRate,
+    total: dailyRate * period.days,
   );
 }

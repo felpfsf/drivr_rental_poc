@@ -1,0 +1,501 @@
+{
+  "uuid": "1fcb295d-fb07-4299-8bf3-1186bdcb4bf1",
+  "lastMigration": 33,
+  "name": "Drivr API",
+  "endpointPrefix": "",
+  "latency": 0,
+  "port": 3000,
+  "hostname": "",
+  "folders": [],
+  "routes": [
+    {
+      "uuid": "c66901d7-9666-410e-924c-f362b77bec54",
+      "type": "crud",
+      "documentation": "",
+      "method": "",
+      "endpoint": "cars",
+      "responses": [
+        {
+          "uuid": "1c0cd7d5-5a02-4ac5-8faa-f7c77f77a03c",
+          "body": "{}",
+          "latency": 800,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "DATABUCKET",
+          "filePath": "",
+          "databucketID": "srhl",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "8370698a-7fde-4a02-87ce-3064c56c55aa",
+      "type": "http",
+      "documentation": "Reserva de carro",
+      "method": "post",
+      "endpoint": "bookings/quote",
+      "responses": [
+        {
+          "uuid": "4f563d82-954f-4a60-80d2-7a2a0d0999bb",
+          "body": "\n{{#if (gt (bodyRaw 'days') 0)}}\n  {{#with (find (dataRaw 'cars') (object id=(bodyRaw 'carId')))}}\n{\n  \"carId\": \"{{id}}\",\n  \"startDate\": \"{{body 'startDate'}}\",\n  \"endDate\": \"{{body 'endDate'}}\",\n  \"days\": {{body 'days'}},\n  \"dailyRate\": {{dailyPrice}},\n  \"total\": {{multiply dailyPrice (bodyRaw 'days')}}\n}\n  {{else}}\n    {{status 404}}\n{\n  \"code\": \"CAR_NOT_FOUND\",\n  \"message\": \"Veículo não encontrado\"\n}\n  {{/with}}\n{{else}}\n  {{status 400}}\n{\n  \"code\": \"INVALID_PERIOD\",\n  \"message\": \"Quantidade de dias inválida\"\n}\n{{/if}}\n",
+          "latency": 800,
+          "statusCode": 200,
+          "label": "",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "4a67a61f-1d81-4e68-ad14-3c4ceaa3c3e4",
+      "type": "http",
+      "documentation": "Lista de carros simula falha",
+      "method": "get",
+      "endpoint": "cars",
+      "responses": [
+        {
+          "uuid": "a4d902c4-e456-4f8b-929b-b7651b40b457",
+          "body": "{\n  \"code\": \"INTERNAL_SERVER_ERROR\",\n  \"message\": \"Erro interno simulado\"\n}",
+          "latency": 0,
+          "statusCode": 500,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "ec0e48b4-834b-4792-aa5f-76ba09e04761",
+      "type": "http",
+      "documentation": "Retorna token fictício",
+      "method": "post",
+      "endpoint": "auth/login",
+      "responses": [
+        {
+          "uuid": "06061a22-8464-4aaa-b213-6f17a920a312",
+          "body": "{\n  \"accessToken\": \"drivr-demo-token\",\n  \"user\": {\n    \"id\": \"user-001\",\n    \"name\": \"Usuário Demo\",\n    \"email\": \"demo@drivr.local\"\n  }\n}",
+          "latency": 800,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [
+            {
+              "target": "body",
+              "modifier": "email",
+              "value": "demo@drivr.local",
+              "invert": false,
+              "operator": "equals"
+            },
+            {
+              "target": "body",
+              "modifier": "password",
+              "value": "123456",
+              "invert": false,
+              "operator": "equals"
+            }
+          ],
+          "rulesOperator": "AND",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "c15f9eec-ab26-4d8d-b08f-622f08adfae8",
+          "body": "{\n  \"code\": \"INVALID_CREDENTIALS\",\n  \"message\": \"E-mail ou senha inválidos\"\n}",
+          "latency": 0,
+          "statusCode": 401,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "570e015b-8226-4ad6-a059-2d01e9042f1d",
+      "type": "http",
+      "documentation": "Simula cadastro",
+      "method": "post",
+      "endpoint": "auth/register",
+      "responses": [
+        {
+          "uuid": "77dfad6b-63f8-4fb5-8e64-ece6a0cd694b",
+          "body": "{\n  \"registrationId\": \"registration-demo-001\",\n  \"status\": \"simulated\",\n  \"message\": \"Cadastro recebido com sucesso\"\n}",
+          "latency": 800,
+          "statusCode": 201,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "AND",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "d3691232-2041-4848-af66-7121b3ea5390",
+      "type": "http",
+      "documentation": "Simula cadastro",
+      "method": "get",
+      "endpoint": "users/me",
+      "responses": [
+        {
+          "uuid": "e7cf19e0-cafd-4ac3-ba76-d0d77efe62b8",
+          "body": "{\n  \"id\": \"user-001\",\n  \"name\": \"Usuário Demo\",\n  \"email\": \"demo@drivr.local\"\n}",
+          "latency": 800,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [
+            {
+              "target": "header",
+              "modifier": "Authorization",
+              "value": "Bearer drivr-demo-token",
+              "invert": false,
+              "operator": "equals"
+            }
+          ],
+          "rulesOperator": "AND",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "13eb1b5b-1f7d-4abd-8e77-b55a42011965",
+          "body": "{\n  \"code\": \"UNAUTHORIZED\",\n  \"message\": \"Autenticação necessária\"\n}",
+          "latency": 0,
+          "statusCode": 401,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "9e05da68-be33-42ec-92c0-5f8f0a2d192a",
+      "type": "http",
+      "documentation": "",
+      "method": "post",
+      "endpoint": "bookings",
+      "responses": [
+        {
+          "uuid": "0519d915-7dfe-48fe-9c91-27e47804d242",
+          "body": "{\n  \"id\": \"booking-{{uuid}}\",\n  \"carId\": \"{{body 'carId'}}\",\n  \"startDate\": \"{{body 'startDate'}}\",\n  \"endDate\": \"{{body 'endDate'}}\",\n  \"status\": \"confirmed\"\n}",
+          "latency": 0,
+          "statusCode": 201,
+          "label": "",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "fde18375-0f65-41ae-86e9-73244c09ca2d",
+          "body": "{\n  \"code\": \"UNAUTHORIZED\",\n  \"message\": \"Autenticação necessária\"\n}",
+          "latency": 0,
+          "statusCode": 401,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "e65bfb46-d303-4a06-9b91-d5d42de38838",
+      "type": "http",
+      "documentation": "SDUI - Catalogo",
+      "method": "get",
+      "endpoint": "catalog/home-layout",
+      "responses": [
+        {
+          "uuid": "1c9fb16a-b64e-4a3f-8498-6228e25729dc",
+          "body": "\n{\n  \"schemaVersion\": 2,\n  \"blocks\": [\n    {\n      \"type\": \"column\",\n      \"props\": {\n        \"spacing\": \"md\"\n      },\n      \"children\": [\n        {\n          \"type\": \"text\",\n          \"props\": {\n            \"value\": \"Sua próxima experiência começa aqui\",\n            \"style\": \"heading\"\n          }\n        },\n        {\n          \"type\": \"text\",\n          \"props\": {\n            \"value\": \"Descubra carros incríveis para sua viagem.\",\n            \"style\": \"body\"\n          }\n        },\n        {\n          \"type\": \"row\",\n          \"props\": {\n            \"spacing\": \"sm\"\n          },\n          \"children\": [\n            {\n              \"type\": \"text\",\n              \"props\": {\n                \"value\": \"Carros selecionados\",\n                \"style\": \"caption\"\n              }\n            },\n            {\n              \"type\": \"text\",\n              \"props\": {\n                \"value\": \"Uma experiência premium\",\n                \"style\": \"caption\"\n              }\n            }\n          ]\n        },\n        {\n          \"type\": \"spacer\",\n          \"props\": {\n            \"size\": \"sm\"\n          }\n        },\n        {\n          \"type\": \"button\",\n          \"props\": {\n            \"label\": \"Conhecer o Audi RS 5\"\n          },\n          \"action\": {\n            \"type\": \"open_car\",\n            \"carId\": \"car-001\"\n          }\n        }\n      ]\n    }\n  ]\n}\n",
+          "latency": 1200,
+          "statusCode": 200,
+          "label": "",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "904ead18-85d1-4246-ad27-3891f4a67759",
+      "type": "http",
+      "documentation": "SDUI - Profile",
+      "method": "get",
+      "endpoint": "account/profile-layout",
+      "responses": [
+        {
+          "uuid": "ca1caf13-1779-4978-8ceb-3e016f505af2",
+          "body": "{\n  \"schemaVersion\": 2,\n  \"blocks\": [\n    {\n      \"type\": \"column\",\n      \"props\": {\n        \"spacing\": \"md\"\n      },\n      \"children\": [\n        {\n          \"type\": \"text\",\n          \"props\": {\n            \"value\": \"Exclusivo para você\",\n            \"style\": \"heading\"\n          }\n        },\n        {\n          \"type\": \"account_benefits_banner\",\n          \"props\": {\n            \"title\": \"Conheça os benefícios DrivR\",\n            \"description\": \"Uma experiência especial para quem ama dirigir.\",\n            \"buttonLabel\": \"Saiba mais\"\n          },\n          \"action\": {\n            \"type\": \"show_benefit_details\"\n          }\n        }\n      ]\n    }\n  ]\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "74a5e79d-08d4-418b-b45d-eed383f8bb13",
+          "body": "{\n  \"code\": \"INTERNAL_SERVER_ERROR\",\n  \"message\": \"Erro interno simulado\"\n}",
+          "latency": 0,
+          "statusCode": 500,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    }
+  ],
+  "rootChildren": [
+    {
+      "type": "route",
+      "uuid": "4a67a61f-1d81-4e68-ad14-3c4ceaa3c3e4"
+    },
+    {
+      "type": "route",
+      "uuid": "c66901d7-9666-410e-924c-f362b77bec54"
+    },
+    {
+      "type": "route",
+      "uuid": "8370698a-7fde-4a02-87ce-3064c56c55aa"
+    },
+    {
+      "type": "route",
+      "uuid": "ec0e48b4-834b-4792-aa5f-76ba09e04761"
+    },
+    {
+      "type": "route",
+      "uuid": "570e015b-8226-4ad6-a059-2d01e9042f1d"
+    },
+    {
+      "type": "route",
+      "uuid": "d3691232-2041-4848-af66-7121b3ea5390"
+    },
+    {
+      "type": "route",
+      "uuid": "9e05da68-be33-42ec-92c0-5f8f0a2d192a"
+    },
+    {
+      "type": "route",
+      "uuid": "e65bfb46-d303-4a06-9b91-d5d42de38838"
+    },
+    {
+      "type": "route",
+      "uuid": "904ead18-85d1-4246-ad27-3891f4a67759"
+    }
+  ],
+  "proxyMode": false,
+  "proxyHost": "",
+  "proxyRemovePrefix": false,
+  "tlsOptions": {
+    "enabled": false,
+    "type": "CERT",
+    "pfxPath": "",
+    "certPath": "",
+    "keyPath": "",
+    "caPath": "",
+    "passphrase": ""
+  },
+  "cors": true,
+  "headers": [
+    {
+      "key": "Content-Type",
+      "value": "application/json"
+    },
+    {
+      "key": "Access-Control-Allow-Origin",
+      "value": "*"
+    },
+    {
+      "key": "Access-Control-Allow-Methods",
+      "value": "GET,POST,PUT,PATCH,DELETE,HEAD,OPTIONS"
+    },
+    {
+      "key": "Access-Control-Allow-Headers",
+      "value": "Content-Type, Origin, Accept, Authorization, Content-Length, X-Requested-With"
+    }
+  ],
+  "proxyReqHeaders": [
+    {
+      "key": "",
+      "value": ""
+    }
+  ],
+  "proxyResHeaders": [
+    {
+      "key": "",
+      "value": ""
+    }
+  ],
+  "data": [
+    {
+      "uuid": "6afbe695-1e83-466b-ae62-397373f73af3",
+      "id": "srhl",
+      "name": "cars",
+      "documentation": "Mock de carros",
+      "value": "\n[\n  {\n    \"id\": \"car-001\",\n    \"brand\": \"Audi\",\n    \"model\": \"RS 5 Coupé\",\n    \"dailyPrice\": 120,\n    \"topSpeedKmh\": 250,\n    \"accelerationSeconds\": 3.9,\n    \"horsePower\": 450,\n    \"fuel\": \"Gasolina\",\n    \"transmission\": \"Automático\",\n    \"seats\": 4,\n    \"description\": \"Um coupé esportivo que combina desempenho e conforto.\"\n  },\n  {\n    \"id\": \"car-002\",\n    \"brand\": \"Porsche\",\n    \"model\": \"Panamera\",\n    \"dailyPrice\": 340,\n    \"topSpeedKmh\": 270,\n    \"accelerationSeconds\": 5.5,\n    \"horsePower\": 330,\n    \"fuel\": \"Gasolina\",\n    \"transmission\": \"Automático\",\n    \"seats\": 4,\n    \"description\": \"Um sedã esportivo que une sofisticação e desempenho.\"\n  },\n  {\n    \"id\": \"car-003\",\n    \"brand\": \"Chevrolet\",\n    \"model\": \"Corvette Z06\",\n    \"dailyPrice\": 620,\n    \"topSpeedKmh\": 315,\n    \"accelerationSeconds\": 3.0,\n    \"horsePower\": 670,\n    \"fuel\": \"Gasolina\",\n    \"transmission\": \"Automático\",\n    \"seats\": 2,\n    \"description\": \"Um superesportivo de personalidade forte.\"\n  },\n  {\n    \"id\": \"car-004\",\n    \"brand\": \"Lamborghini\",\n    \"model\": \"Huracán\",\n    \"dailyPrice\": 580,\n    \"topSpeedKmh\": 325,\n    \"accelerationSeconds\": 2.9,\n    \"horsePower\": 640,\n    \"fuel\": \"Gasolina\",\n    \"transmission\": \"Automático\",\n    \"seats\": 2,\n    \"description\": \"Um superesportivo de design icônico e desempenho extremo.\"\n  }\n]\n"
+    }
+  ],
+  "callbacks": []
+}
