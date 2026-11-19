@@ -350,6 +350,42 @@
       "responseMode": null,
       "streamingMode": null,
       "streamingInterval": 0
+    },
+    {
+      "uuid": "904ead18-85d1-4246-ad27-3891f4a67759",
+      "type": "http",
+      "documentation": "SDUI - Profile",
+      "method": "get",
+      "endpoint": "account/profile-layout",
+      "responses": [
+        {
+          "uuid": "ca1caf13-1779-4978-8ceb-3e016f505af2",
+          "body": "{\n  \"schemaVersion\": 2,\n  \"blocks\": [\n    {\n      \"type\": \"column\",\n      \"props\": {\n        \"spacing\": \"md\"\n      },\n      \"children\": [\n        {\n          \"type\": \"text\",\n          \"props\": {\n            \"value\": \"Exclusivo para você\",\n            \"style\": \"heading\"\n          }\n        },\n        {\n          \"type\": \"account_benefits_banner\",\n          \"props\": {\n            \"title\": \"Conheça os benefícios DrivR\",\n            \"description\": \"Uma experiência especial para quem ama dirigir.\",\n            \"buttonLabel\": \"Saiba mais\"\n          },\n          \"action\": {\n            \"type\": \"show_benefit_details\"\n          }\n        }\n      ]\n    }\n  ]\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
     }
   ],
   "rootChildren": [
@@ -384,6 +420,10 @@
     {
       "type": "route",
       "uuid": "e65bfb46-d303-4a06-9b91-d5d42de38838"
+    },
+    {
+      "type": "route",
+      "uuid": "904ead18-85d1-4246-ad27-3891f4a67759"
     }
   ],
   "proxyMode": false,
