@@ -9,6 +9,7 @@ workspace:
   - apps/shell_app
   - packages/core
   - packages/design_system
+  - packages/sdui_engine
   - packages/features/catalog_mfe
   - packages/features/booking_mfe
   - packages/features/account_mfe
