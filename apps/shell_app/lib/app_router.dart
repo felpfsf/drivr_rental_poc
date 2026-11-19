@@ -10,6 +10,7 @@ GoRouter createAppRouter({
   required CatalogRepository catalogRepository,
   required BookingRepository bookingRepository,
   required AccountRepository accountRepository,
+  required AccountSduiRepository accountSduiRepository,
   required SessionController session,
 }) {
   return GoRouter(
@@ -80,6 +81,7 @@ GoRouter createAppRouter({
                       if (session.isAuthenticated) {
                         return ProfilePage(
                           repository: accountRepository,
+                          layoutRepository: accountSduiRepository,
                           onLogout: session.logout,
                         );
                       }

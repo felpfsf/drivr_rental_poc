@@ -39,11 +39,13 @@ class _RentalAppState extends State<RentalApp> {
   );
 
   late final AccountRepository _accountRepository = HttpAccountRepository(_api);
-
+  late final AccountSduiRepository _accountSduiRepository =
+      HttpAccountSduiRepository(_api);
   late final GoRouter _router = createAppRouter(
     catalogRepository: widget.catalogRepository ?? HttpCatalogRepository(_api),
     bookingRepository: widget.bookingRepository ?? HttpBookingRepository(_api),
     accountRepository: _accountRepository,
+    accountSduiRepository: _accountSduiRepository,
     session: _session,
   );
 

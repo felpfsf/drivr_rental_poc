@@ -1,6 +1,8 @@
 import 'package:account_mfe/account_mfe.dart';
+import 'package:account_mfe/src/presentation/widgets/account_profile_sdui_slot.dart';
 import 'package:design_system/design_system.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:sdui_engine/sdui_engine.dart';
 
 class AccountPage extends StatelessWidget {
   const AccountPage({
@@ -37,10 +39,12 @@ class ProfilePage extends StatefulWidget {
   const ProfilePage({
     super.key,
     required this.repository,
+    required this.layoutRepository,
     required this.onLogout,
   });
 
   final AccountRepository repository;
+  final AccountSduiRepository layoutRepository;
   final VoidCallback onLogout;
 
   @override
@@ -48,12 +52,45 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  late final Future<AccountUser> _profile = widget.repository.getAccount();
+  late Future<AccountUser> _profileFuture;
+  late Future<SduiDocument> _layoutFuture;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _profileFuture = widget.repository.getAccount();
+
+    _layoutFuture = widget.layoutRepository.getProfileLayout();
+  }
+
+  void _showBenefits() {
+    showDialog<void>(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          title: const Text('Benefícios DrivR'),
+          content: const Text(
+            'Esta é uma experiência demonstrativa '
+            'controlada por Server-Driven UI.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(dialogContext).pop();
+              },
+              child: const Text('Fechar'),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<AccountUser>(
-      future: _profile,
+      future: _profileFuture,
       builder: (context, snapshot) {
         if (snapshot.connectionState != ConnectionState.done) {
           return const Center(child: CircularProgressIndicator());
@@ -89,6 +126,16 @@ class _ProfilePageState extends State<ProfilePage> {
               user.email,
               textAlign: TextAlign.center,
             ),
+
+            const SizedBox(height: AppSpacing.xl),
+
+            AccountProfileSduiSlot(
+              layoutFuture: _layoutFuture,
+              onBenefitsRequested: _showBenefits,
+            ),
+
+            const SizedBox(height: AppSpacing.xl),
+
             const SizedBox(height: 32),
             OutlinedButton(
               onPressed: widget.onLogout,
