@@ -15,6 +15,21 @@ class AccountSduiSection extends StatelessWidget {
   static final SduiRegistry _registry = createStandardSduiRegistry()
       .withComponents({
         'account_benefits_banner': _buildBenefitsBanner,
+      })
+      .withValidators({
+        'account_benefits_banner': (node) {
+          final title = node.props['title'];
+
+          if (title is! String || title.trim().isEmpty) {
+            return 'Título do benefício obrigatório';
+          }
+
+          if (title.length > 100) {
+            return 'Título do benefício muito longo';
+          }
+
+          return null;
+        },
       });
 
   @override

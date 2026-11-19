@@ -18,7 +18,29 @@ class CatalogSduiRenderer extends StatelessWidget {
       .withComponents({
         'section_title': _buildSectionTitle,
         'promo_banner': _buildPromoBanner,
+      })
+      .withValidators({
+        'section_title': (node) {
+          return _validateTitle(node);
+        },
+        'promo_banner': (node) {
+          return _validateTitle(node);
+        },
       });
+
+  static String? _validateTitle(SduiNode node) {
+    final title = node.props['title'];
+
+    if (title is! String || title.trim().isEmpty) {
+      return 'Título obrigatório';
+    }
+
+    if (title.length > 100) {
+      return 'Título excede 100 caracteres';
+    }
+
+    return null;
+  }
 
   @override
   Widget build(BuildContext context) {

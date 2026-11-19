@@ -11,6 +11,34 @@ SduiRegistry createStandardSduiRegistry() {
     'text': _buildText,
     'spacer': _buildSpacer,
     'button': _buildButton,
+  }).withValidators({
+    'column': (node) {
+      if (node.children.isEmpty) {
+        return 'Column precisa conter pelo menos um filho';
+      }
+
+      return _validateSpacing(node, 'spacing');
+    },
+
+    'row': (node) {
+      if (node.children.isEmpty || node.children.length > 3) {
+        return 'Row aceita de 1 a 3 filhos';
+      }
+
+      return _validateSpacing(node, 'spacing');
+    },
+
+    'text': (node) {
+      return _validateRequiredString(node, 'value', maxLength: 180);
+    },
+
+    'button': (node) {
+      return _validateRequiredString(node, 'label', maxLength: 48);
+    },
+
+    'spacer': (node) {
+      return _validateSpacing(node, 'size');
+    },
   });
 }
 
@@ -115,4 +143,36 @@ List<Widget> _withSpacing(List<Widget> widgets, double gap) {
       widgets[i],
     ],
   ];
+}
+
+String? _validateRequiredString(
+  SduiNode node,
+  String property, {
+  required int maxLength,
+}) {
+  final value = node.props[property];
+
+  if (value is! String || value.trim().isEmpty) {
+    return '$property precisa ser um texto não vazio';
+  }
+
+  if (value.length > maxLength) {
+    return '$property excede $maxLength caracteres';
+  }
+
+  return null;
+}
+
+String? _validateSpacing(SduiNode node, String property) {
+  final value = node.props[property];
+
+  if (value == null) return null;
+
+  const validValues = {'xs', 'sm', 'md', 'lg', 'xl'};
+
+  if (value is String && validValues.contains(value)) {
+    return null;
+  }
+
+  return '$property contém um token de espaçamento inválido';
 }
